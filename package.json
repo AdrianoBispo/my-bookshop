@@ -2,6 +2,13 @@
   "name": "my-bookshop",
   "version": "1.0.0",
   "description": "A simple CAP project.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adriano-bispo/my-bookshop.git"
+  },
+  "license": "UNLICENSED",
+  "author": "Adriano Bispo",
+  "private": true,
   "dependencies": {
     "@sap/cds": "^9",
     "express": "^4"
@@ -12,5 +19,10 @@
   "scripts": {
     "start": "cds-serve"
   },
-  "private": true
+  "cds": { "requires": {
+    "db": {
+      "kind": "sqlite",
+      "credentials": { "url": "db/my-bookshop.sqlite" }
+    }
+  }}
 }
