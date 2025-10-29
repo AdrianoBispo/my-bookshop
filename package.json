@@ -12,6 +12,7 @@
   "dependencies": {
     "@cap-js/hana": "^2",
     "@sap/cds": "^9",
+    "@sap/cds-fiori": "^2.1.0",
     "@sap/xssec": "^4",
     "express": "^4"
   },
@@ -27,7 +28,7 @@
       "preview": true
     },
     "server": {
-      "index": true
+      "index-page": true
     },
     "requires": {
       "db": {
