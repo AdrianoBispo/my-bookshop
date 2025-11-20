@@ -1,23 +1,55 @@
-  module.exports = (srv) => {
+// Este é o arquivo de implementação do nosso serviço.
+// Aqui, podemos adicionar lógica de negócios customizada aos eventos do serviço.
+module.exports = (srv) => {
 
-  const {Books} = cds.entities ('my.bookshop')
+  // Obtém a definição da entidade 'Livros' do nosso modelo de dados.
+  // Isso nos permite interagir com a tabela de livros no banco de dados.
+  const { Livros } = cds.entities('my.bookshop');
 
-  // Reduce stock of ordered books
-  srv.before ('CREATE', 'Orders', async (req) => {
-    const order = req.data
-    if (!order.amount || order.amount <= 0)  return req.error (400, 'Order at least 1 book')
-    const tx = cds.transaction(req)
-    const affectedRows = await tx.run (
-      UPDATE (Books)
-        .set   ({ stock: {'-=': order.amount}})
-        .where ({ stock: {'>=': order.amount},/*and*/ ID: order.book_ID})
-    )
-    if (affectedRows === 0)  req.error (409, "Sold out, sorry")
-  })
+  /**
+   * Lógica customizada ANTES da criação de um novo Pedido.
+   * Este handler é acionado sempre que uma requisição 'CREATE' para a entidade 'Pedidos' é recebida.
+   * O objetivo é reduzir o estoque do livro que está sendo pedido.
+   */
+  srv.before('CREATE', 'Pedidos', async (req) => {
+    const pedido = req.data; // Os dados do pedido vindo na requisição
 
-  // Add some discount for overstocked books
-  srv.after ('READ', 'Books', each => {
-    if (each.stock > 111)  each.title += ' -- 11% discount!'
-  })
+    // Validação: Garante que a quantidade do pedido seja um número positivo.
+    if (!pedido.quantidade || pedido.quantidade <= 0) {
+      return req.error(400, 'Peça pelo menos 1 livro');
+    }
+
+    // Inicia uma transação no banco de dados para garantir a consistência dos dados.
+    const tx = cds.transaction(req);
+    
+    // Executa um comando de atualização (UPDATE) na entidade 'Livros'.
+    const affectedRows = await tx.run(
+      UPDATE(Livros)
+        // Define que o campo 'estoque' deve ser decrementado pela 'quantidade' do pedido.
+        .set({ estoque: { '-=': pedido.quantidade } })
+        // A cláusula 'where' especifica qual livro deve ser atualizado.
+        .where({ estoque: { '>=': pedido.quantidade }, /*and*/ ID: pedido.livro_ID })
+    );
+
+    // Se nenhuma linha foi afetada, significa que o livro não tinha estoque suficiente.
+    // Nesse caso, a transação é revertida e um erro é retornado ao cliente.
+    if (affectedRows === 0) {
+      req.error(409, 'Esgotado, desculpe');
+    }
+  });
+
+  /**
+   * Lógica customizada DEPOIS da leitura da entidade 'Livros'.
+   * Este handler é acionado sempre que uma requisição 'READ' para 'Livros' é concluída.
+   * O objetivo é adicionar um texto de desconto ao título de livros com muito estoque.
+   */
+  srv.after('READ', 'Livros', each => {
+    // Para cada livro lido, verifica se o estoque é maior que 111.
+    if (each.estoque > 111) {
+      // Se for, adiciona um sufixo de desconto ao título do livro.
+      // Isso é uma modificação temporária nos dados retornados, não altera o banco de dados.
+      each.titulo += ' -- 11% de desconto!';
+    }
+  });
 
 }
