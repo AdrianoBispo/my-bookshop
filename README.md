@@ -1,27 +1,61 @@
-# Getting Started
+# My Bookshop
 
-Welcome to your new project.
+Este é um projeto de exemplo de um serviço de livraria desenvolvido com o [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/docs/get-started/) para Node.js.
 
-It contains these folders and files, following our recommended project layout:
+## Descrição
 
-File or Folder | Purpose
----------|----------
-`app/` | content for UI frontends goes here
-`db/` | your domain models and data go here
-`srv/` | your service models and code go here
-`package.json` | project metadata and configuration
-`readme.md` | this getting started guide
+O projeto expõe um serviço de catálogo (`CatalogService`) que permite consultar livros e autores, além de criar novos pedidos. Ele utiliza um banco de dados SQLite para desenvolvimento local.
 
+Este projeto foi desenvolvido com base no tutorial da SAP: [Build a Business Application Using CAP for Node.js](https://developers.sap.com/mission.cp-starter-extensions-cap.html).
 
-## Next Steps
+## Pré-requisitos
 
-- Open a new terminal and run `cds watch`
-- (in VS Code simply choose _**Terminal** > Run Task > cds watch_)
-- Start adding content, for example, a [db/schema.cds](db/schema.cds).
+Antes de começar, você precisará ter as seguintes ferramentas instaladas:
 
+- [Node.js](https://nodejs.org/en/)
+- [SQLite](https://www.sqlite.org/index.html)
 
-## Learn More
+## Instalação
 
-Learn more at https://cap.cloud.sap/docs/get-started/.
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/adriano-bispo/my-bookshop.git
+   cd my-bookshop
+   ```
 
-Projeto desenvolvido através do SAP Tutorial: [Build a Business Application Using CAP for Node.js](https://developers.sap.com/mission.cp-starter-extensions-cap.html)
+2. Instale as dependências do projeto:
+   ```bash
+   npm install
+   ```
+
+## Executando o Projeto
+
+Para iniciar o serviço em modo de desenvolvimento (com recarregamento automático), execute:
+
+```bash
+cds watch
+```
+
+O serviço estará disponível em `http://localhost:4004`.
+
+## Estrutura do Projeto
+
+O projeto segue a estrutura recomendada pelo CAP:
+
+- **`app/`**: Contém as aplicações de UI (frontend).
+- **`db/`**: Contém os modelos de dados (`.cds`) e dados iniciais (`.csv`).
+- **`srv/`**: Contém os modelos de serviço (`.cds`) e a lógica de implementação (`.js`).
+- **`package.json`**: Metadados do projeto e dependências.
+
+## Serviços Disponíveis
+
+### CatalogService
+
+O `CatalogService` expõe as seguintes entidades:
+
+- **`Books`**: Entidade para visualização dos livros.
+  - **Endpoint:** `GET /catalog/Books`
+- **`Authors`**: Entidade para visualização dos autores.
+  - **Endpoint:** `GET /catalog/Authors`
+- **`Orders`**: Entidade para inserção de novos pedidos.
+  - **Endpoint:** `POST /catalog/Orders`
